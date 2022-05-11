@@ -6,7 +6,7 @@ Experience = namedtuple(
     'Experience', ('state', 'action', 'next_state', 'reward')) 
 
 
-class Replaymemorry:
+class ReplayMemory:
     def __init__(self, capacity):
         self.capacity = capacity
         self.memorry = []
