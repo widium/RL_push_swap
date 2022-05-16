@@ -4,7 +4,6 @@ import numpy as np
 class Action():
     
     def __init__(self, A, B):
-        
         self.push_a = "push_a"
         self.push_b = "push_b"
         self.rotate_a = "rotate_a"
@@ -21,57 +20,29 @@ class Action():
     
         
         # self.actions_space = len(self.action)
-        
-    def  A_is_full(self):
-        if self.A.stack.size != 0 and self.B.stack.size == 0:
-            return (1)
-        else :
-            return (0)
-        
-    def  B_is_full(self):
-            if self.B.stack.size != 0 and self.A.stack.size == 0:
-                return (1)
-            else :
-                return (0)
             
     def possible_actions(self):
         action = list()
         # Si la Stack A est sorted et B vide
         if self.B.stack.size == 0 and np.all(self.A.stack[:-1] <= self.A.stack[1:]):
-            pass
-        
-        # Si A et plein et que B et vide 
-        elif (A_is_full() == 1):
+            return (action);
+  
+        if (self.B.stack.size > 1):
             action.extend([self.push_b,
                            self.rotate_b,
                            self.inverse_rotate_b,
                            self.swap_b])
-
-        # Si B et plein et que A et vide
-        elif (B_is_full() == 1):
-            action.extend([self.push_a,
+          
+        if (self.A.stack.size > 1):
+              action.extend([self.push_a,
                            self.rotate_a,
                            self.inverse_rotate_a,
                            self.swap_a])
-
         
-        elif self.A.stack.size == 1:
-            action.append([self.push_a])
-
-        elif self.B.stack.size == 1:
-            action.append([self.push_b])
-            
-        else :
-            action.extend([self.push_a, 
-                           self.push_b, 
-                           self.rotate_a, 
-                           self.rotate_b,
-                           self.rotate,
-                           self.inverse_rotate_a,
-                           self.inverse_rotate_b,
+        
+        if (self.A.stack.size > 1 and self.B.stack.size > 1) :
+            action.extend([self.rotate,
                            self.reverse,
-                           self.swap_a,
-                           self.swap_b,
                            self.swap])
         
         return action
@@ -82,11 +53,12 @@ class Action():
 class Moove():
 
   def __init__(self, A, B):
+      self.reward = 0;
       self.A = A
       self.B = B
 
   
-  def push_a(self):
+  def push_b(self):
         # Si A est vide 
         if not self.A.stack.size:
           return
@@ -99,8 +71,9 @@ class Moove():
           self.A.top = None
         else:
           self.A.top = self.A.stack[-1]
+        self.reward -= 1
     
-  def push_b(self):
+  def push_a(self):
       # Si B est vide 
       if not self.B.stack.size:
         return
@@ -115,6 +88,7 @@ class Moove():
         self.B.top = None
       else:
         self.B.top = self.B.stack[-1]
+      self.reward -= 1
   
   def rotate_a(self):
     
@@ -124,6 +98,7 @@ class Moove():
 
     self.A.stack = np.roll(self.A.stack, 1)
     self.A.top = self.A.stack[-1]
+    self.reward -= 1
 
   def rotate_b(self):
     
@@ -133,6 +108,7 @@ class Moove():
     
     self.B.stack = np.roll(self.B.stack, 1)
     self.B.top = self.B.stack[-1]
+    self.reward -= 1
 
   def rotate(self):
     
@@ -147,6 +123,7 @@ class Moove():
     
     self.A.stack = np.roll(self.A.stack, -1)
     self.A.top = self.A.stack[-1]
+    self.reward -= 1
   
   def inverse_rotate_b(self):
 
@@ -156,6 +133,7 @@ class Moove():
 
     self.B.stack = np.roll(self.B.stack, -1)
     self.B.top = self.B.stack[-1]
+    self.reward -= 1
 
   def reverse(self):
     
@@ -169,6 +147,7 @@ class Moove():
 
       self.A.stack[[-1, -2]] =  self.A.stack[[-2, -1]]
       self.A.top = self.A.stack[-1]
+      self.reward -= 1
 
   def swap_b(self):
     
@@ -178,6 +157,7 @@ class Moove():
     
       self.B.stack[[-1, -2]] =  self.B.stack[[-2, -1]]
       self.B.top = self.B.stack[-1]
+      self.reward -= 1
       
   def swap(self):
     
