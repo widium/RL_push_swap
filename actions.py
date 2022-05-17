@@ -4,22 +4,26 @@ import numpy as np
 class Action():
     
     def __init__(self, A, B):
-        self.push_a = "push_a"
-        self.push_b = "push_b"
-        self.rotate_a = "rotate_a"
-        self.rotate_b = "rotate_b"
-        self.rotate = "rotate"
-        self.inverse_rotate_a = "inverse_rotate_a"
-        self.inverse_rotate_b = "inverse_rotate_b"
-        self.reverse = "reverse"
-        self.swap_a = "swap_a"
-        self.swap_b = "swap_b"
-        self.swap = "swap"
         self.A = A
         self.B = B
-    
         
-        # self.actions_space = len(self.action)
+        self.push_b = 0 # "push_b"
+        self.push_a = 1 # "push_a"
+        self.rotate_b = 2 # "rotate_b"
+        self.rotate_a = 3 # "rotate_a"
+        self.inverse_rotate_b = 4 # "inverse_rotate_b"
+        self.inverse_rotate_a = 5 # "inverse_rotate_a"
+        self.swap_b = 6 # "swap_b"
+        self.swap_a = 7 # "swap_a"
+        self.rotate = 8 # "rotate"
+        self.reverse = 9 # "reverse"
+        self.swap = 10 # "swap"
+        
+    # ['push_b', 'push_a', 'rotate_b', 'rotate_a', 'inverse_rotate_b', 'inverse_rotate_a', 'swap_b', 'swap_a', 'rotate', 'reverse', 'swap']
+    
+    # [ 0,         1,         2,            3,            4,                5,                6,         7,       8,        9,         10]  
+  
+  
             
     def possible_actions(self):
         action = list()
