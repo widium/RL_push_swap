@@ -3,10 +3,6 @@ from collections import namedtuple
 import random
 
 
-Experience = namedtuple(
-    'Experience', ('state', 'action', 'next_state', 'reward')) 
-
-
 class ReplayMemory:
     def __init__(self, capacity):
         self.capacity = capacity
