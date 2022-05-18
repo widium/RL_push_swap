@@ -28,29 +28,29 @@ class Action():
     def possible_actions(self):
         action = list()
         # Si la Stack A est sorted et B vide
-        if self.B.stack.size == 0 and np.all(self.A.stack[:-1] <= self.A.stack[1:]):
+        if np.count_nonzero(~np.isnan(self.B.stack)) == 0 and np.all(self.A.stack[:-1] <= self.A.stack[1:]):
             return (action);
   
-        if (self.B.stack.size > 1):
+        if (np.count_nonzero(~np.isnan(self.B.stack)) > 1):
             action.extend([self.push_b,
                            self.rotate_b,
                            self.inverse_rotate_b,
                            self.swap_b])
           
-        if (self.A.stack.size > 1):
+        if (np.count_nonzero(~np.isnan(self.A.stack)) > 1):
               action.extend([self.push_a,
                            self.rotate_a,
                            self.inverse_rotate_a,
                            self.swap_a])
         
         
-        if (self.A.stack.size > 1 and self.B.stack.size > 1) :
+        if (np.count_nonzero(~np.isnan(self.A.stack)) > 1 and np.count_nonzero(~np.isnan(self.B.stack)) > 1) :
             action.extend([self.rotate,
                            self.reverse,
                            self.swap])
         
         return action
-
+        
     
     
     

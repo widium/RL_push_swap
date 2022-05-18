@@ -5,11 +5,11 @@ import random
 
 class Stack():
 
-  def __init__(self, size):
+  def __init__(self, size, empty):
 
-      if size > 0 :
-        self.stack = np.arange(size)
+      if empty == 0 :
+        self.stack = np.random.choice(range(100), size, replace=False)
         self.top = self.stack[-1]
       else :
-        self.stack = np.array([])
+        self.stack = np.full(size, np.nan)
         self.top = None
