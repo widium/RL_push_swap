@@ -18,11 +18,6 @@ class Action():
         self.rotate = 8 # "rotate"
         self.reverse = 9 # "reverse"
         self.swap = 10 # "swap"
-        
-    # ['push_b', 'push_a', 'rotate_b', 'rotate_a', 'inverse_rotate_b', 'inverse_rotate_a', 'swap_b', 'swap_a', 'rotate', 'reverse', 'swap']
-    
-    # [ 0,         1,         2,            3,            4,                5,                6,         7,       8,        9,         10]  
-  
   
             
     def possible_actions(self):
@@ -50,25 +45,78 @@ class Action():
                            self.swap])
         
         return action
+      
+    def balanced(self, size):
+      if delta(self.A.stack.size, size) > 0:
         
-    
-    
+        divergence = delta(self.A.stack.size, size)
+        for i in range(divergence):
+            # print("rm nan in A")
+            if (np.isnan(self.A.stack[i])):
+              self.A.stack = np.delete(self.A.stack, i)
+  
+        
+      elif delta(self.A.stack.size, size) < 0:
+        
+        divergence = abs(delta(self.A.stack.size, size))
+        for i in range(divergence):
+            # print("add nan in A")
+            self.A.stack = np.insert(self.A.stack, i, np.nan)
+
+      # ===============B==================== #
+      if delta(self.B.stack.size, size) > 0:
+        # print(f"B = {self.B.stack.size} , Size = {size} --> supprimer des nan B")
+        divergence = delta(self.B.stack.size, size)
+        for i in range(divergence):
+            # print("rm nan in B")
+            if (np.isnan(self.B.stack[i])):
+              self.B.stack = np.delete(self.B.stack, i)
+        
+      elif delta(self.B.stack.size, size) < 0:
+        
+        divergence = abs(delta(self.B.stack.size, size))
+        for i in range(divergence):
+            # print("add nan in B")
+            self.B.stack = np.insert(self.B.stack, i, np.nan)
+      
+      # if self.A.stack.size == size and self.B.stack.size == size :
+          # print("balanced ok")
+        
+
+def delta(A_size, size):
+  return (A_size - size)
+
+
+  
+  # if A.stack.size > size:
+  #   print("A possede trop de nan")
+  # if B.stack.size > size :
+  #   print("B possede trop de nan")
+  # if A.stack.size > B.stack.size :
+  #   print("il manque des nan dans B")
+  # if B.stack.size > A.stack.size :
+  #   print("il manque des nan dans A")
+  
+      
     
 class Moove():
 
-  def __init__(self, A, B):
+  def __init__(self, A, B, size):
       self.reward = 0;
       self.A = A
       self.B = B
+      self.initial_size = size
 
   
   def push_b(self):
         # Si A est vide 
         if not self.A.stack.size:
           return
-        self.B.stack = np.append(self.B.stack, self.A.top)
-        self.A.stack = np.delete(self.A.stack, -1)
-        self.B.top = self.A.top
+        # ne pas push des nan
+        if not np.isnan(self.A.top):
+          self.B.stack = np.append(self.B.stack, self.A.top)
+          self.A.stack = np.delete(self.A.stack, -1)
+          self.B.top = self.A.top
 
         # Si A est vide maintenant
         if not self.A.stack.size:
@@ -76,13 +124,14 @@ class Moove():
         else:
           self.A.top = self.A.stack[-1]
         self.reward -= 1
+        # balanced(self.A, self.B, self.initial_size)
     
   def push_a(self):
       # Si B est vide 
       if not self.B.stack.size:
         return
-      # Si A est vide
-      if not self.A.stack.size :
+      # ne pas push des nan
+      if not np.isnan(self.B.top):
         self.A.stack = np.append(self.A.stack, self.B.top)
         self.B.stack = np.delete(self.B.stack, -1)
         self.A.top = self.B.top
