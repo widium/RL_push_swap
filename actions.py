@@ -1,6 +1,10 @@
 
 import numpy as np
 
+def delta(A_size, size):
+  return (A_size - size)
+
+
 class Action():
     
     def __init__(self, A, B):
@@ -47,11 +51,11 @@ class Action():
         return action
       
     def balanced(self, size):
+
       if delta(self.A.stack.size, size) > 0:
         
         divergence = delta(self.A.stack.size, size)
         for i in range(divergence):
-            # print("rm nan in A")
             if (np.isnan(self.A.stack[i])):
               self.A.stack = np.delete(self.A.stack, i)
   
@@ -81,138 +85,160 @@ class Action():
       
       # if self.A.stack.size == size and self.B.stack.size == size :
           # print("balanced ok")
-        
-
-def delta(A_size, size):
-  return (A_size - size)
-
-
-  
-  # if A.stack.size > size:
-  #   print("A possede trop de nan")
-  # if B.stack.size > size :
-  #   print("B possede trop de nan")
-  # if A.stack.size > B.stack.size :
-  #   print("il manque des nan dans B")
-  # if B.stack.size > A.stack.size :
-  #   print("il manque des nan dans A")
   
       
     
 class Moove():
 
   def __init__(self, A, B, size):
-      self.reward = 0;
-      self.A = A
-      self.B = B
       self.initial_size = size
+      self.action = Action(A, B)
 
   
-  def push_b(self):
+  def push_b(self, A, B):
+        
         # Si A est vide 
-        if not self.A.stack.size:
+        if not A.stack.size:
           return
         # ne pas push des nan
-        if not np.isnan(self.A.top):
-          self.B.stack = np.append(self.B.stack, self.A.top)
-          self.A.stack = np.delete(self.A.stack, -1)
-          self.B.top = self.A.top
+        if not np.isnan(A.top):
+          B.stack = np.append(B.stack, A.top)
+          A.stack = np.delete(A.stack, -1)
+          B.top = A.top
 
         # Si A est vide maintenant
-        if not self.A.stack.size:
-          self.A.top = None
+        if not A.stack.size:
+          A.top = None
         else:
-          self.A.top = self.A.stack[-1]
-        self.reward -= 1
-        # balanced(self.A, self.B, self.initial_size)
+          A.top = A.stack[-1]
+          
+        self.action.balanced(self.initial_size)
+        return (-1)
     
-  def push_a(self):
+  def push_a(self, A, B):
       # Si B est vide 
-      if not self.B.stack.size:
+      if not B.stack.size:
         return
       # ne pas push des nan
-      if not np.isnan(self.B.top):
-        self.A.stack = np.append(self.A.stack, self.B.top)
-        self.B.stack = np.delete(self.B.stack, -1)
-        self.A.top = self.B.top
+      if not np.isnan(B.top):
+        A.stack = np.append(A.stack, B.top)
+        B.stack = np.delete(B.stack, -1)
+        A.top = B.top
 
       # Si B est vide maintenant
-      if not self.B.stack.size:
-        self.B.top = None
+      if not B.stack.size:
+        B.top = None
       else:
-        self.B.top = self.B.stack[-1]
-      self.reward -= 1
+        B.top = B.stack[-1]
+        
+      self.action.balanced(self.initial_size)
+      return (-1)
   
-  def rotate_a(self):
+  def rotate_a(self, A):
     
     # Si A est vide ou n'a qu'un element 
-    if not self.A.stack.size or self.A.stack.size == 1:
+    if not A.stack.size or A.stack.size == 1:
       return
+    
+    
+    nbr = np.isnan(A.stack).sum()
+    bot = A.stack[nbr]
+    A.stack = np.append(A.stack, bot)
+    A.stack = np.delete(A.stack, nbr)
+    A.top = A.stack[-1]
+    
+    self.action.balanced(self.initial_size)
+    return (-1)
 
-    self.A.stack = np.roll(self.A.stack, 1)
-    self.A.top = self.A.stack[-1]
-    self.reward -= 1
-
-  def rotate_b(self):
+  def rotate_b(self, B):
     
     # Si B est vide ou n'a qu'un element 
-    if not self.B.stack.size or self.B.stack.size == 1:
+    if not B.stack.size or B.stack.size == 1:
       return
     
-    self.B.stack = np.roll(self.B.stack, 1)
-    self.B.top = self.B.stack[-1]
-    self.reward -= 1
-
-  def rotate(self):
+    nbr = np.isnan(B.stack).sum()
+    bot = B.stack[nbr]
+    B.stack = np.append(B.stack, bot)
+    B.stack = np.delete(B.stack, nbr)
+    B.top = B.stack[-1]
     
-    self.rotate_a()
-    self.rotate_b()
+    self.action.balanced(self.initial_size)
+    return (-1)
 
-  def inverse_rotate_a(self):
+  def rotate(self, A, B):
+    
+    re = 0
+    re += self.rotate_a(A)
+    re += self.rotate_b(B)
+    return re
+    
+
+  def inverse_rotate_a(self, A):
 
     # Si A est vide ou n'a qu'un element 
-    if not self.A.stack.size or self.A.stack.size == 1:
+    if not A.stack.size or A.stack.size == 1:
       return
     
-    self.A.stack = np.roll(self.A.stack, -1)
-    self.A.top = self.A.stack[-1]
-    self.reward -= 1
+    nbr = np.isnan(A.stack).sum()
+    A.stack = np.insert(A.stack, nbr, A.top)
+    A.stack = np.delete(A.stack, -1)
+    A.top = A.stack[-1]
+    
+    self.action.balanced(self.initial_size)
   
-  def inverse_rotate_b(self):
+  def inverse_rotate_b(self, B):
 
     # Si B est vide ou n'a qu'un element 
-    if not self.B.stack.size or self.B.stack.size == 1:
+    if not B.stack.size or B.stack.size == 1:
       return
 
-    self.B.stack = np.roll(self.B.stack, -1)
-    self.B.top = self.B.stack[-1]
-    self.reward -= 1
-
-  def reverse(self):
+    nbr = np.isnan(B.stack).sum()
+    B.stack = np.insert(B.stack, nbr, B.top)
+    B.stack = np.delete(B.stack, -1)
+    B.top = B.stack[-1]
     
-    self.inverse_rotate_a()
-    self.inverse_rotate_b()
+    self.action.balanced(self.initial_size)
+    return (-1)
+
+  def reverse(self, A, B):
+    
+    re = 0
+    re += self.inverse_rotate_a(A)
+    re += self.inverse_rotate_b(B)
+    return re
   
-  def swap_a(self):
+  def swap_a(self, A):
       # Si A est vide ou n'a qu'un element 
-      if not self.A.stack.size or self.A.stack.size == 1:
+      if not A.stack.size or A.stack.size == 1:
+        return
+      
+      if np.isnan(A.top) or np.isnan(A.stack[-2]):
         return
 
-      self.A.stack[[-1, -2]] =  self.A.stack[[-2, -1]]
-      self.A.top = self.A.stack[-1]
-      self.reward -= 1
+      A.stack[[-1, -2]] =  A.stack[[-2, -1]]
+      A.top = A.stack[-1]
+      
+      self.action.balanced(self.initial_size)
+      return (-1)
 
-  def swap_b(self):
+  def swap_b(self, B):
     
       # Si B est vide ou n'a qu'un element 
-      if not self.B.stack.size or self.B.stack.size == 1:
+      if not B.stack.size or B.stack.size == 1:
         return
-    
-      self.B.stack[[-1, -2]] =  self.B.stack[[-2, -1]]
-      self.B.top = self.B.stack[-1]
-      self.reward -= 1
+
+      if np.isnan(B.top) or np.isnan(B.stack[-2]):
+        return
+
+      B.stack[[-1, -2]] =  B.stack[[-2, -1]]
+      B.top = B.stack[-1]
       
-  def swap(self):
+      self.action.balanced(self.initial_size)
+      return (-1)
+      
+  def swap(self, A, B):
     
-    self.swap_a()
-    self.swap_b()
+    re = 0
+    re += self.swap_a(A)
+    re += self.swap_b(B)
+    return re
