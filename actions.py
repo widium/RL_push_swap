@@ -98,8 +98,9 @@ class Moove():
   def push_b(self, A, B):
         
         # Si A est vide 
-        if not A.stack.size:
-          return
+        if np.count_nonzero(~np.isnan(A.stack)) == 0:
+          return (-5)
+        
         # ne pas push des nan
         if not np.isnan(A.top):
           B.stack = np.append(B.stack, A.top)
@@ -107,7 +108,7 @@ class Moove():
           B.top = A.top
 
         # Si A est vide maintenant
-        if not A.stack.size:
+        if np.count_nonzero(~np.isnan(A.stack)) == 0:
           A.top = None
         else:
           A.top = A.stack[-1]
@@ -117,8 +118,9 @@ class Moove():
     
   def push_a(self, A, B):
       # Si B est vide 
-      if not B.stack.size:
-        return
+      if np.count_nonzero(~np.isnan(B.stack)) == 0:
+        return (-5)
+      
       # ne pas push des nan
       if not np.isnan(B.top):
         A.stack = np.append(A.stack, B.top)
@@ -126,7 +128,7 @@ class Moove():
         A.top = B.top
 
       # Si B est vide maintenant
-      if not B.stack.size:
+      if np.count_nonzero(~np.isnan(B.stack)) == 0:
         B.top = None
       else:
         B.top = B.stack[-1]
@@ -137,8 +139,8 @@ class Moove():
   def rotate_a(self, A):
     
     # Si A est vide ou n'a qu'un element 
-    if not A.stack.size or A.stack.size == 1:
-      return
+    if np.count_nonzero(~np.isnan(A.stack)) == 0 or np.count_nonzero(~np.isnan(A.stack)) == 1:
+      return (-5)
     
     
     nbr = np.isnan(A.stack).sum()
@@ -153,8 +155,8 @@ class Moove():
   def rotate_b(self, B):
     
     # Si B est vide ou n'a qu'un element 
-    if not B.stack.size or B.stack.size == 1:
-      return
+    if np.count_nonzero(~np.isnan(B.stack)) == 0 or np.count_nonzero(~np.isnan(B.stack)) == 1:
+      return (-5)
     
     nbr = np.isnan(B.stack).sum()
     bot = B.stack[nbr]
@@ -176,8 +178,8 @@ class Moove():
   def inverse_rotate_a(self, A):
 
     # Si A est vide ou n'a qu'un element 
-    if not A.stack.size or A.stack.size == 1:
-      return
+    if np.count_nonzero(~np.isnan(A.stack)) == 0 or np.count_nonzero(~np.isnan(A.stack)) == 1:
+      return (-5)
     
     nbr = np.isnan(A.stack).sum()
     A.stack = np.insert(A.stack, nbr, A.top)
@@ -185,12 +187,13 @@ class Moove():
     A.top = A.stack[-1]
     
     self.action.balanced(self.initial_size)
+    return (-1)
   
   def inverse_rotate_b(self, B):
 
     # Si B est vide ou n'a qu'un element 
-    if not B.stack.size or B.stack.size == 1:
-      return
+    if np.count_nonzero(~np.isnan(B.stack)) == 0 or np.count_nonzero(~np.isnan(B.stack)) == 1:
+      return (-5)
 
     nbr = np.isnan(B.stack).sum()
     B.stack = np.insert(B.stack, nbr, B.top)
@@ -208,12 +211,10 @@ class Moove():
     return re
   
   def swap_a(self, A):
+    
       # Si A est vide ou n'a qu'un element 
-      if not A.stack.size or A.stack.size == 1:
-        return
-      
       if np.isnan(A.top) or np.isnan(A.stack[-2]):
-        return
+        return (-5)
 
       A.stack[[-1, -2]] =  A.stack[[-2, -1]]
       A.top = A.stack[-1]
@@ -224,11 +225,8 @@ class Moove():
   def swap_b(self, B):
     
       # Si B est vide ou n'a qu'un element 
-      if not B.stack.size or B.stack.size == 1:
-        return
-
       if np.isnan(B.top) or np.isnan(B.stack[-2]):
-        return
+        return (-5)
 
       B.stack[[-1, -2]] =  B.stack[[-2, -1]]
       B.top = B.stack[-1]
@@ -242,3 +240,36 @@ class Moove():
     re += self.swap_a(A)
     re += self.swap_b(B)
     return re
+  
+  
+class List_actions:
+    
+    def __init__(self):
+        self.list_of_action = list()
+        # self.top = self.list_of_action[-1]
+        
+    def __str__(self):
+        return f"{self.list_of_action}"
+    
+    def add(self, current_action):
+        self.list_of_action.append(current_action)
+    
+    def compare(self):
+        if not self.list_of_action or len(self.list_of_action) == 1:
+            return 0;
+        
+        if self.list_of_action[-1] == 0 and self.list_of_action[-2] == 1:
+            return -5
+        if self.list_of_action[-1] == 1 and self.list_of_action[-2] == 0:
+            return -5
+        if self.list_of_action[-1] == 3 and self.list_of_action[-2] == 5:
+            return -5
+        if self.list_of_action[-1] == 5 and self.list_of_action[-2] == 3:
+            return -5
+        if self.list_of_action[-1] == 2 and self.list_of_action[-2] == 4:
+            return -5
+        if self.list_of_action[-1] == 4 and self.list_of_action[-2] == 2:
+            return -5
+        
+        else :
+            return 0

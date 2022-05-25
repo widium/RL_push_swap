@@ -3,6 +3,17 @@ from collections import namedtuple
 import random
 
 
+class Experience:
+    
+    def __init__(self):
+        self.tuple = namedtuple(
+                'Experience', ('state', 'action', 'next_state', 'reward'))
+        
+    def create_experience(self, state, action, next_state, reward):
+        return self.tuple(state, action, next_state, reward)
+        
+        
+        
 class ReplayMemory:
     def __init__(self, capacity):
         self.capacity = capacity
@@ -24,6 +35,15 @@ class ReplayMemory:
     
     def can_provide_sample(self, batch_size):
         return len(self.memorry) >= batch_size
+    
+    def print_history(self, batch_size):
+        
+        i = 0
+        for exp in self.memorry:
+            if i > batch_size:
+                break
+            print(f"Actions : {exp.action} \t Reward : {exp.reward}")
+            i += 1
 
 
 class EpsilonGreedy:
