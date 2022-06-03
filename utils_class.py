@@ -36,6 +36,19 @@ class ReplayMemory:
     def can_provide_sample(self, batch_size):
         return len(self.memorry) >= batch_size
     
+    def extract_value(self, experiences):
+        
+        Experience = namedtuple('Experience', ('state', 'action', 'next_state', 'reward'))
+        
+        batch = Experience(*zip(*experiences))
+        
+        state = np.array([state for state in batch.state])
+        action = np.array([action for action in batch.action])
+        next_state = np.array([next_state for next_state in batch.next_state])
+        reward = np.array([reward for reward in batch.reward])
+    
+        return state, action, next_state, reward
+    
     def print_history(self, batch_size):
         
         i = 0

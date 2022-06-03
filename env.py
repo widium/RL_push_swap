@@ -14,14 +14,15 @@ from DQN import DQNAgent
 
 STACK_SIZE = 10
 
-EPISODE = 2500
-CAPACITY = 100
+EPISODE = 2
+CAPACITY = 100_000
 BATCH_SIZE = 64
 MIN_REPLAY_MEMORY_SIZE = 100
 
-DECAY = 0.998
-MAX_EPSILON = 0.99
+DECAY = 0.001
+START_EPSILON = 1
 MIN_EPSILON = 0.15
+TARGET_UPDATE = 10
 
 ACTION_REWARD = -1
 INVERSE_ACTION_REWARD = -5
@@ -32,8 +33,6 @@ DISCOUNT = 0.95
 GAMMA = 0.99
 
 
-
-
 class Env:
     
     
@@ -42,17 +41,15 @@ class Env:
         self.B = Stack(size, 1)
         self.size = size
         self.state_t = np.vstack((self.A.stack, self.B.stack))
-        self.state_t1 = np.vstack((self.A.stack, self.B.stack))
         
         self.moover = Moove(self.A, self.B, size)
         self.actions = Action(self.A, self.B)
         self.liste = List_actions()
         self.current_action = 1;
         # self.agent = Agent(EpsilonGreedy(MIN_EPSILON, MAX_EPSILON, DECAY), 11)
-        self.strategy = EpsilonGreedy(MIN_EPSILON, MAX_EPSILON, DECAY)
+        self.strategy = EpsilonGreedy(MIN_EPSILON, START_EPSILON, DECAY)
         self.agent = DQNAgent(size)
         
-        self.cum_reward = 0
         self.current_reward = 0
         self.step = 0
         
@@ -61,10 +58,13 @@ class Env:
         self.replaymemory = ReplayMemory(CAPACITY)
     
     def reset(self, size):
-        self.A = Stack(size)
-        self.B = Stack(0)
+        self.A = Stack(size, 0)
+        self.B = Stack(size, 1)
+        self.state_t = np.vstack((self.A.stack, self.B.stack))
         
     def state(self):
+        if self.B.stack.size == 0 and np.all(self.A.stack[:-1] <= self.A.stack[1:]):
+            return 'done'
         return np.vstack((self.A.stack, self.B.stack))
         
     def actions_available(self):
@@ -72,26 +72,12 @@ class Env:
     
     def reward(self):
         if self.B.stack.size == 0 and np.all(self.A.stack[:-1] <= self.A.stack[1:]):
-            self.cum_reward += 100
-        
-        return (self.cum_reward)
-        
-    def choose_action(self):
-        exploration_rate = self.strategy.get_exploration_rate(self.step)
-        
-        self.step += 1
-        
-        if (exploration_rate > random.random()):
-            #exploration
-            self.current_action = np.random.choice(self.actions.possible_actions())
-            return self.current_action
-        else :
-            self.current_action = np.argmax(self.agent.policy_model.predict(self.state))
-            return self.current_action
+            self.current_reward += 100
+        reward_tmp = self.current_reward
+        self.current_reward = 0
+        return (reward_tmp)
     
     def take_actions(self):
-        
-        self.state_t = self.state()
         
         self.liste.add(self.current_action)
         self.current_reward += self.liste.compare()
@@ -128,8 +114,23 @@ class Env:
             
         elif self.current_action == 10:
             self.current_reward += self.moover.swap(self.A, self.B)
+       
+    def choose_action(self):
+        exploration_rate = self.strategy.get_exploration_rate(self.step)
         
-        self.state_t1 = self.state()
+        self.step += 1
+        
+        if (exploration_rate > random.random()):
+            #exploration
+            self.current_action = np.random.choice(self.actions.possible_actions())
+            self.take_actions()
+            return self.current_action
+        else :
+            self.current_action = np.argmax(self.agent.policy_model.predict(self.state))
+            self.take_actions()
+            return self.current_action
+    
+    
 
     def action_space(self):
       return np.array([0,
@@ -153,14 +154,13 @@ class Env:
           print(f"|{a}\t{b}|")
         print("___________\t")
     
-    def create_experience(self):
-        self.experience = self.exp.create_experience(self.state_t, self.current_action, self.state_t1, self.current_reward)
-        self.cum_reward += self.current_reward
-        self.current_reward = 0
+    def create_experience(self, state_t, action, state_t1, reward):
+        return self.exp.create_experience(state_t, action, state_t1, reward)
         
-    def print_experience(self):
-        A_t, B_t = np.split(self.experience.state, 2, axis=0)
-        A_t1, B_t1 = np.split(self.experience.next_state, 2, axis=0)
+        
+    def print_experience(self, experience):
+        A_t, B_t = np.split(experience.state, 2, axis=0)
+        A_t1, B_t1 = np.split(experience.next_state, 2, axis=0)
         
         A_t = A_t.reshape((A_t.shape[1]))
         B_t = B_t.reshape((B_t.shape[1]))
@@ -176,6 +176,6 @@ class Env:
           print(f"|{a_t}\t{b_t}|\t\t|{a_t1}\t{b_t1}|")
         print("___________\t\t___________")
         print("----------------------------------")
-        print(f"\tAction [{self.experience.action}]")
-        print(f"\tReward [{self.experience.reward}]")
+        print(f"\tAction [{experience.action}]")
+        print(f"\tReward [{experience.reward}]")
         print("----------------------------------")
