@@ -36,3 +36,10 @@ def print_experience(experience):
     print(f"\tAction [{experience.action}]")
     print(f"\tReward [{experience.reward}]")
     print("----------------------------------")
+
+def print_buffer(buffer):
+    
+    print("========== BUFFER ==========")
+    for i in buffer:
+        print_experience(i)
+    print(f"========== [{len(buffer)} experience ] ==========")

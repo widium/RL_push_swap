@@ -1,14 +1,11 @@
 import numpy as np
 from numpy import nan
 
-from tabulate import tabulate
 import random
-from itertools import zip_longest
 from collections import namedtuple
 from stack import Stack
 from actions import Moove, Action, List_actions
 from utils_class import EpsilonGreedy, ReplayMemory
-from DQN import DQNAgent  
 from constant import *
 
 

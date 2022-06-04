@@ -1,27 +1,26 @@
 import numpy as np
 from keras.models import Sequential
 from keras.layers import Dense
-from stack import Stack
 from constant import *
 
 class DQNAgent:
-  def __init__(self, state, actions_space):
+  def __init__(self, features, actions_space):
 
     #policy model
     # train every steps
-    self.policy_model = self.create_model(state, actions_space)
+    self.policy_model = self.create_model(features, actions_space)
 
     #target model
     #.predict() every steps
-    self.target_model = self.create_model(state, actions_space)
+    self.target_model = self.create_model(features, actions_space)
     self.target_model.set_weights(self.policy_model.get_weights())
 
     self.target_update_counter = 0
 
 
-  def create_model(self, state, actions_space):
+  def create_model(self, features, actions_space):
     model = Sequential()
-    model.add(Dense(100, activation='relu', input_dim=state))
+    model.add(Dense(100, activation='relu', input_dim=features))
     model.add(Dense(actions_space, activation="softmax"))
     model.compile(optimizer='adam', loss='mae')
     return model
