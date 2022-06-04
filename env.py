@@ -7,30 +7,9 @@ from itertools import zip_longest
 from collections import namedtuple
 from stack import Stack
 from actions import Moove, Action, List_actions
-from utils_class import EpsilonGreedy, ReplayMemory, Agent, Experience
+from utils_class import EpsilonGreedy, ReplayMemory
 from DQN import DQNAgent  
-
-
-
-STACK_SIZE = 10
-
-EPISODE = 2
-CAPACITY = 100_000
-BATCH_SIZE = 64
-MIN_REPLAY_MEMORY_SIZE = 100
-
-DECAY = 0.001
-START_EPSILON = 1
-MIN_EPSILON = 0.15
-TARGET_UPDATE = 10
-
-ACTION_REWARD = -1
-INVERSE_ACTION_REWARD = -5
-FINISH_REWARD = 100
-
-LEARNING_RATE = 0.1
-DISCOUNT = 0.95
-GAMMA = 0.99
+from constant import *
 
 
 class Env:
@@ -48,13 +27,10 @@ class Env:
         self.current_action = 1;
         # self.agent = Agent(EpsilonGreedy(MIN_EPSILON, MAX_EPSILON, DECAY), 11)
         self.strategy = EpsilonGreedy(MIN_EPSILON, START_EPSILON, DECAY)
-        self.agent = DQNAgent(size)
         
         self.current_reward = 0
         self.step = 0
         
-        self.exp = Experience()
-        self.experience = None
         self.replaymemory = ReplayMemory(CAPACITY)
     
     def reset(self, size):
@@ -115,7 +91,7 @@ class Env:
         elif self.current_action == 10:
             self.current_reward += self.moover.swap(self.A, self.B)
        
-    def choose_action(self):
+    def choose_action(self, policy_model):
         exploration_rate = self.strategy.get_exploration_rate(self.step)
         
         self.step += 1
@@ -126,7 +102,7 @@ class Env:
             self.take_actions()
             return self.current_action
         else :
-            self.current_action = np.argmax(self.agent.policy_model.predict(self.state))
+            self.current_action = np.argmax(policy_model.predict(self.state))
             self.take_actions()
             return self.current_action
     
@@ -155,7 +131,9 @@ class Env:
         print("___________\t")
     
     def create_experience(self, state_t, action, state_t1, reward):
-        return self.exp.create_experience(state_t, action, state_t1, reward)
+        Experience = namedtuple(
+                'Experience', ('state', 'action', 'next_state', 'reward'))
+        return Experience(state_t, action, state_t1, reward)
         
         
     def print_experience(self, experience):

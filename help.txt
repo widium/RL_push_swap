@@ -1,0 +1,89 @@
+Bonjour à tous !
+
+Je fais actuellement un projet en DQN qui consiste a trier des Nombres avec 2 stacks et des fonctions de trie obligatoire
+Le but serait que l'Agent généralise un algo avec les fonctions Obligatoire.
+(c'est un projet qui provient de l'ecole 42 , mais sans AI)
+
+J'ai créer tout l'environnement, mais je ne sais pas
+comment je dois organiser au mieux mon state a donner a mon model.
+
+On dispose de 2 stack A et B de même dimensions.
+A possède des Nombre aléatoires.
+B est vide (remplie de nan) :
+
+	 A 		 B
+	[97.,  [nan,   
+	 39.,	nan,
+	 74.,	nan,
+	 54.,	nan,
+	 35.,	nan,
+	 53.,	nan,
+	 37.,	nan,
+	 27.,	nan,
+	 77.,	nan,
+	 18.]	nan]
+	 
+ A.shape    B.shape
+ (1, 10)	(1, 10)
+ 
+ (1 ligne avec 10 features)
+
+
+Les 2 stack représente le State de L'Agent
+Il faut constamment que l'agent puisse avoir les 2 stacks dans son state.
+
+J'ai concaténé les 2 vecteurs en matrice :
+
+				State :
+[
+	A [[97. 39. 74. 54. 35. 53. 37. 27. 77. 18.]
+	B [nan nan nan nan nan nan nan nan nan nan]]
+]
+
+			State.shape 
+			  (2, 10)
+
+Lors de l'entraînement d'un Dense Model classique cela bloque
+Car si j'ai bien compris les 2 rows dans le Sate sont traiter comme 2 exemples différents
+alors qu'ils doivent être lier...
+Et lors de l'entraînement du Buffer replayMemory on donne N state a fit et ça devient de la 3D
+(2 state -> shape(2, 2, 10))
+
+J'ai opté alors pour un state en 3D pour unifier les 2 stack dans le State :
+
+				Tensor :
+[
+	A [[97. 39. 74. 54. 35. 53. 37. 27. 77. 18.]
+	B [nan nan nan nan nan nan nan nan nan nan]]
+	
+	A [[97. 39. 74. 54. 35. 53. 37. 27. 77. 18.]
+	B  [nan nan nan nan nan nan nan nan nan nan]]
+	
+	A [[97. 39. 74. 54. 35. 53. 37. 27. 77. 18.]
+	B [nan nan nan nan nan nan nan nan nan nan]]
+	
+	A [[97. 39. 74. 54. 35. 53. 37. 27. 77. 18.]
+	B [nan nan nan nan nan nan nan nan nan nan]]
+	
+]
+
+				Tensor.shape
+				 (4, 2, 10)
+
+ 			  
+Mais le but de ce projet serait de donner n'importe quelle taille de Stack (nbr d'éléments dans A)
+Et qu'ils puissent les trier...
+Et vue que le nombre d'éléments est représenter par les features il n'est pas variable...
+J'ai fait mon DQN (sans utiliser celui de tensorflow) et mon environnement a la main (sans utiliser openai).
+
+
+https://github.com/widium/RL_push_swap
+Je peux partager mon github , le code se trouve dans "main.ipynb " si besoin
+
+Merci D'avance pour les conseils, Bonne journée
+
+
+
+
+
+

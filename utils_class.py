@@ -1,18 +1,29 @@
 import numpy as np
 from collections import namedtuple
 import random
-
-
-class Experience:
+from itertools import zip_longest
+        
+def print_experience(experience):
+    A_t, B_t = np.split(experience.state, 2, axis=0)
+    A_t1, B_t1 = np.split(experience.next_state, 2, axis=0)
     
-    def __init__(self):
-        self.tuple = namedtuple(
-                'Experience', ('state', 'action', 'next_state', 'reward'))
+    A_t = A_t.reshape((A_t.shape[1]))
+    B_t = B_t.reshape((B_t.shape[1]))
+    
+    A_t1 = A_t1.reshape((A_t1.shape[1]))
+    B_t1 = B_t1.reshape((B_t1.shape[1]))
+    
+    print("---State t---\t\t---State t+1---")
+    print("-A-\t-B-\t\t-A-\t-B-")
+    print("___________\t\t___________")
+    for a_t, b_t, a_t1, b_t1 in zip_longest(reversed(A_t), reversed(B_t), reversed(A_t1), reversed(B_t1)):
         
-    def create_experience(self, state, action, next_state, reward):
-        return self.tuple(state, action, next_state, reward)
-        
-        
+        print(f"|{a_t}\t{b_t}|\t\t|{a_t1}\t{b_t1}|")
+    print("___________\t\t___________")
+    print("----------------------------------")
+    print(f"\tAction [{experience.action}]")
+    print(f"\tReward [{experience.reward}]")
+    print("----------------------------------")
         
 class ReplayMemory:
     def __init__(self, capacity):
@@ -57,6 +68,13 @@ class ReplayMemory:
                 break
             print(f"Actions : {exp.action} \t Reward : {exp.reward}")
             i += 1
+            
+    def print_buffer(self, experiences):
+        print("========== BUFFER ==========")
+        for i in experiences:
+            print_experience(i)
+        print(f"========== [{len(experiences)} experience ] ==========")
+            
 
 
 class EpsilonGreedy:
@@ -68,20 +86,3 @@ class EpsilonGreedy:
     def get_exploration_rate(self, current_step):
         return (self.min + (self.max - self.min)*
                 (np.exp(-self.decay * current_step)))
-
-
-class Agent:
-    def __init__(self, epsilongreedy, num_actions):
-        self.step = 0
-        self.epsilongreedy = epsilongreedy
-        self.num_actions = num_actions
-    
-    def select_action(self, state, policy_network):
-        exploration_rate = self.epsilongreedy.get_exploration_rate(self.step)
-        self.step += 1
-        
-        if (exploration_rate > random.random()):
-            #exploration
-            return random.randrange(self.num_actions)
-        else :
-            return policy_network.predict(state).argmax()
