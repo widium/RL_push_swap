@@ -57,18 +57,18 @@ def value_function(buffer, Q_target_list, Q_policy_list):
     y = list()
 
     ##--------Creer X et Y pour l'entrainement du model-----##
-    for t, (state, action, next_state, reward) in enumerate(buffer):
+    for t, (state, action, next_state, reward, done) in enumerate(buffer):
       
       #tant que c'est pas la dernier q value
       #calculer la q value actuel avec la belman equation
       
-      if not state == 'done':
+      if not done:
         #recuperer la max Q_target & calculer sa Qvalue a linstant t
         max_Q_target = np.max(Q_target_list[t])
         max_Q_value = reward + GAMMA * max_Q_target
       
       #si c'est la derniere q value on lui assigne un reward
-      elif (next_state == 'done') :
+      else :
         max_Q_value = reward
 
       #recuperer les Q value a l'instant t [11]
