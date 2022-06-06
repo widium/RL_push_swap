@@ -30,12 +30,12 @@ class ReplayMemory:
         
         batch = Experience(*zip(*experiences))
         
-        state = np.array([state for state in batch.state])
-        action = np.array([action for action in batch.action])
-        next_state = np.array([next_state for next_state in batch.next_state])
-        reward = np.array([reward for reward in batch.reward])
+        states = np.array([state for state in batch.state])
+        actions = np.array([action for action in batch.action])
+        next_states = np.array([next_state for next_state in batch.next_state])
+        rewards = np.array([reward for reward in batch.reward])
     
-        return state, action, next_state, reward
+        return states, actions, next_states, rewards
     
     def print_history(self, batch_size):
         

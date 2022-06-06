@@ -6,6 +6,7 @@ from collections import namedtuple
 from stack import Stack
 from actions import Moove, Action, List_actions
 from utils_class import EpsilonGreedy, ReplayMemory
+from utils import is_sorted, pre_processing_state
 from constant import *
 
 
@@ -22,8 +23,6 @@ class Env:
         self.actions = Action(self.A, self.B)
         self.liste = List_actions()
         self.current_action = 1;
-        # self.agent = Agent(EpsilonGreedy(MIN_EPSILON, MAX_EPSILON, DECAY), 11)
-        self.strategy = EpsilonGreedy(MIN_EPSILON, START_EPSILON, DECAY)
         
         self.current_reward = 0
         self.step = 0
@@ -36,10 +35,13 @@ class Env:
         self.state_t = np.vstack((self.A.stack, self.B.stack))
         
     def state(self):
-        if self.B.stack.size == 0 and np.all(self.A.stack[:-1] <= self.A.stack[1:]):
+        if is_sorted(self.A):
             return 'done'
+        return 'in progress'
+
+    def get_state(self):
         return np.vstack((self.A.stack, self.B.stack))
-        
+    
     def actions_available(self):
         return self.actions.possible_actions()
     
@@ -88,10 +90,7 @@ class Env:
         elif self.current_action == 10:
             self.current_reward += self.moover.swap(self.A, self.B)
        
-    def choose_action(self, policy_model):
-        exploration_rate = self.strategy.get_exploration_rate(self.step)
-        
-        self.step += 1
+    def choose_action(self, state, policy_model, exploration_rate):
         
         if (exploration_rate > random.random()):
             #exploration
@@ -99,7 +98,8 @@ class Env:
             self.take_actions()
             return self.current_action
         else :
-            self.current_action = np.argmax(policy_model.predict(self.state))
+            state = pre_processing_state(state)
+            self.current_action = np.argmax(policy_model.predict(state))
             self.take_actions()
             return self.current_action
     
@@ -120,5 +120,11 @@ class Env:
     
     def create_experience(self, state_t, action, state_t1, reward):
         Experience = namedtuple(
-                'Experience', ('state', 'action', 'next_state', 'reward'))
-        return Experience(state_t, action, state_t1, reward)
+                'Experience', ('state', 'action', 'next_state', 'reward', 'done'))
+        
+        if (self.state == 'done') :
+            done = 1
+        else :
+            done = 0
+        
+        return Experience(state_t, action, state_t1, reward, done)
