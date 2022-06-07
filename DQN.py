@@ -5,29 +5,29 @@ from keras.layers import Dense
 from constant import *
 
 class DQNAgent:
-  def __init__(self, n_steps, features, actions_space):
+  def __init__(self, n_stack, features, actions_space):
 
     #policy model
     # train every steps
-    self.policy_model = self.create_model(n_steps, features, actions_space)
+    self.policy_model = self.create_model(n_stack, features, actions_space)
 
     #target model
     #.predict() every steps
-    self.target_model = self.create_model(n_steps, features, actions_space)
+    self.target_model = self.create_model(n_stack, features, actions_space)
     self.target_model.set_weights(self.policy_model.get_weights())
 
     self.target_update_counter = 0
 
 
-  def create_model(self, n_steps, features, actions_space):
+  def create_model(self, n_stack, features, actions_space):
     
     model = Sequential()
-    model.add(Conv1D(64, 2, activation='relu', input_shape=(n_steps, features)))
+    model.add(Conv1D(64, 2, activation='relu', input_shape=(n_stack, features)))
     model.add(MaxPooling1D(data_format="channels_first"))
     model.add(Flatten())
     model.add(Dense(50, activation='relu'))
     model.add(Dense(actions_space))
-    model.compile(optimizer='adam', loss='mae')
+    model.compile(optimizer='adam', loss='categorical_crossentropy')
     return model
 
   
@@ -61,10 +61,10 @@ def value_function(buffer, Q_target_list, Q_policy_list):
       
       #tant que c'est pas la dernier q value
       #calculer la q value actuel avec la belman equation
-      
       if not done:
-        #recuperer la max Q_target & calculer sa Qvalue a linstant t
+        #recuperer la meilleur action predit par le target model
         max_Q_target = np.max(Q_target_list[t])
+        #calculer sa Qvalue
         max_Q_value = reward + GAMMA * max_Q_target
       
       #si c'est la derniere q value on lui assigne un reward

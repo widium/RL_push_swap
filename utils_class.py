@@ -26,7 +26,7 @@ class ReplayMemory:
     
     def extract_value(self, experiences):
         
-        Experience = namedtuple('Experience', ('state', 'action', 'next_state', 'reward'))
+        Experience = namedtuple('Experience', ('state', 'action', 'next_state', 'reward', 'done'))
         
         batch = Experience(*zip(*experiences))
         
@@ -34,8 +34,9 @@ class ReplayMemory:
         actions = np.array([action for action in batch.action])
         next_states = np.array([next_state for next_state in batch.next_state])
         rewards = np.array([reward for reward in batch.reward])
+        dones = np.array([done for done in batch.done])
     
-        return states, actions, next_states, rewards
+        return states, actions, next_states, rewards, dones
     
     def print_history(self, batch_size):
         

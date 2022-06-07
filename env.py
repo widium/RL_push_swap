@@ -35,7 +35,7 @@ class Env:
         self.state_t = np.vstack((self.A.stack, self.B.stack))
         
     def state(self):
-        if is_sorted(self.A):
+        if is_sorted(self.A) and np.count_nonzero(~np.isnan(self.B.stack)) == 0:
             return 'done'
         return 'in progress'
 
@@ -46,7 +46,7 @@ class Env:
         return self.actions.possible_actions()
     
     def reward(self):
-        if self.B.stack.size == 0 and np.all(self.A.stack[:-1] <= self.A.stack[1:]):
+        if is_sorted(self.A) and np.count_nonzero(~np.isnan(self.B.stack)) == 0:
             self.current_reward += 100
         reward_tmp = self.current_reward
         self.current_reward = 0
@@ -64,22 +64,22 @@ class Env:
             self.current_reward += self.moover.push_a(self.A, self.B)
             
         elif self.current_action == 2:
-            self.current_reward += self.moover.rotate_b(self.B)
+            self.current_reward += self.moover.rotate_b(self.A, self.B)
             
         elif self.current_action == 3:
-            self.current_reward += self.moover.rotate_a(self.A)
+            self.current_reward += self.moover.rotate_a(self.A, self.B)
             
         elif self.current_action == 4:
-            self.current_reward += self.moover.inverse_rotate_b(self.B)
+            self.current_reward += self.moover.inverse_rotate_b(self.A, self.B)
             
         elif self.current_action == 5:
-            self.current_reward += self.moover.inverse_rotate_a(self.A)
+            self.current_reward += self.moover.inverse_rotate_a(self.A, self.B)
             
         elif self.current_action == 6:
-           self.current_reward += self.moover.swap_b(self.B)
+           self.current_reward += self.moover.swap_b(self.A, self.B)
             
         elif self.current_action == 7:
-            self.current_reward += self.moover.swap_a(self.A)
+            self.current_reward += self.moover.swap_a(self.A, self.B)
             
         elif self.current_action == 8:
            self.current_reward += self.moover.rotate(self.A, self.B)
@@ -122,7 +122,7 @@ class Env:
         Experience = namedtuple(
                 'Experience', ('state', 'action', 'next_state', 'reward', 'done'))
         
-        if (self.state == 'done') :
+        if (self.state() == 'done') :
             done = 1
         else :
             done = 0
