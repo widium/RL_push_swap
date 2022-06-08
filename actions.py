@@ -1,7 +1,19 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    actions.py                                         :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: ebennace <ebennace@student.42lausanne.c    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2022/06/08 05:38:58 by ebennace          #+#    #+#              #
+#    Updated: 2022/06/08 07:01:57 by ebennace         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 
 import numpy as np
 
-from utils import is_sorted
+from utils_class import is_sorted
 
 def delta(A_size, size):
   return (A_size - size)
@@ -60,39 +72,39 @@ class Action():
         
         return action
       
-    def balanced(self, size):
+    # def balanced(self, size):
       
-      # =============== A ==================== #
-      # SI il y a trop de Nan
-      if delta(self.A.stack.size, size) > 0:
+    #   # =============== A ==================== #
+    #   # SI il y a trop de Nan
+    #   if delta(self.A.stack.size, size) > 0:
         
         
-        divergence = delta(self.A.stack.size, size)
-        for i in range(divergence):
-            if (np.isnan(self.A.stack[i])):
-              self.A.stack = np.delete(self.A.stack, i)
+    #     divergence = delta(self.A.stack.size, size)
+    #     for i in range(divergence):
+    #         if (np.isnan(self.A.stack[i])):
+    #           self.A.stack = np.delete(self.A.stack, i)
   
-      # Si il y a pas assez de Nan
-      elif delta(self.A.stack.size, size) < 0:
+    #   # Si il y a pas assez de Nan
+    #   elif delta(self.A.stack.size, size) < 0:
         
-        divergence = abs(delta(self.A.stack.size, size))
-        for i in range(divergence):
-            self.A.stack = np.insert(self.A.stack, i, np.nan)
+    #     divergence = abs(delta(self.A.stack.size, size))
+    #     for i in range(divergence):
+    #         self.A.stack = np.insert(self.A.stack, i, np.nan)
 
-      # =============== B ==================== #
-      # SI il y a trop de Nan
-      if delta(self.B.stack.size, size) > 0:
-        divergence = delta(self.B.stack.size, size)
-        for i in range(divergence):
-            if (np.isnan(self.B.stack[i])):
-              self.B.stack = np.delete(self.B.stack, i)
+    #   # =============== B ==================== #
+    #   # SI il y a trop de Nan
+    #   if delta(self.B.stack.size, size) > 0:
+    #     divergence = delta(self.B.stack.size, size)
+    #     for i in range(divergence):
+    #         if (np.isnan(self.B.stack[i])):
+    #           self.B.stack = np.delete(self.B.stack, i)
               
-      # Si il y a pas assez de Nan  
-      elif delta(self.B.stack.size, size) < 0:
+    #   # Si il y a pas assez de Nan  
+    #   elif delta(self.B.stack.size, size) < 0:
         
-        divergence = abs(delta(self.B.stack.size, size))
-        for i in range(divergence):
-            self.B.stack = np.insert(self.B.stack, i, np.nan)
+    #     divergence = abs(delta(self.B.stack.size, size))
+    #     for i in range(divergence):
+    #         self.B.stack = np.insert(self.B.stack, i, np.nan)
       
       # if self.A.stack.size == size and self.B.stack.size == size :
           # print("balanced ok")
@@ -139,7 +151,7 @@ class Moove():
         return (-1)
     
   def push_a(self, A, B):
-      # Si B est vide 
+      # Si B est vide
       if np.count_nonzero(~np.isnan(B.stack)) == 0:
         return (-5)
       

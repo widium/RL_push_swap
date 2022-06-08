@@ -1,3 +1,15 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    DQN.py                                             :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: ebennace <ebennace@student.42lausanne.c    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2022/06/08 05:39:13 by ebennace          #+#    #+#              #
+#    Updated: 2022/06/08 05:39:18 by ebennace         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 import numpy as np
 from keras.models import Sequential
 from keras.layers import Conv1D, MaxPooling1D, Flatten

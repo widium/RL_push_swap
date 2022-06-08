@@ -1,7 +1,31 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    utils_class.py                                     :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: ebennace <ebennace@student.42lausanne.c    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2022/06/08 05:38:49 by ebennace          #+#    #+#              #
+#    Updated: 2022/06/08 09:56:28 by ebennace         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 import numpy as np
 from collections import namedtuple
 import random
-        
+
+# def is_sorted(A):
+#     for i in range(A.stack.size -1):
+#          if A.stack[i+1] > A.stack[i] :
+#                return False
+#     return True 
+
+def is_sorted(A):
+    for i in range(A.stack.size -1):
+         if A.stack[i+1, : ] > A.stack[i , :]:
+               return False
+    return True 
+
 class ReplayMemory:
     def __init__(self, capacity):
         self.capacity = capacity
@@ -54,7 +78,9 @@ class EpsilonGreedy:
         self.min = min
         self.max = max
         self.decay = decay
+        self.epsilon = max
     
     def get_exploration_rate(self, current_step):
-        return (self.min + (self.max - self.min)*
-                (np.exp(-self.decay * current_step)))
+        self.epsilon = (self.min + (self.max - self.min)* (np.exp(-self.decay * current_step)))
+        return self.epsilon
+        

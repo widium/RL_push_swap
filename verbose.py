@@ -6,7 +6,7 @@
 #    By: ebennace <ebennace@student.42lausanne.c    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/07 06:34:16 by ebennace          #+#    #+#              #
-#    Updated: 2022/06/07 08:57:43 by ebennace         ###   ########.fr        #
+#    Updated: 2022/06/08 09:55:28 by ebennace         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -51,10 +51,13 @@ def print_shapes(state, next_state):
 
 def print_state(env, shape=False):
     
+    A = env.A.stack.reshape((env.A.stack.shape[0]))
+    B = env.B.stack.reshape((env.B.stack.shape[0]))
+    
     print("---State t---")
     print("-A-\t-B-")
     print("___________\t")
-    for a, b in zip_longest(reversed(env.A.stack), reversed(env.B.stack), fillvalue='xxx'):
+    for a, b in zip_longest(reversed(A), reversed(B), fillvalue='xxx'):
         
         print(f"|{a}\t{b}|")
     print("___________\t")
@@ -102,8 +105,14 @@ def print_buffer(buffer):
         print_experience(i)
     print(f"========== [{len(buffer)} experience ] ==========")
     
-def print_interaction(action, reward):
+def print_interaction(epsilon, action, reward):
     print("----------------------------------")
     print(f"Action [{name_action(action)}]")
     print(f"Reward [{reward}]")
+    print(f"Epsilon [{epsilon}]")
+    print("----------------------------------")
+    
+def print_cummulative_reward(env):
+    print("----------------------------------")
+    print(f"Cumulative Reward [{env.cummulative_reward}]")
     print("----------------------------------")
