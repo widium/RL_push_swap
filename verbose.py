@@ -6,7 +6,7 @@
 #    By: ebennace <ebennace@student.42lausanne.c    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/07 06:34:16 by ebennace          #+#    #+#              #
-#    Updated: 2022/06/08 09:55:28 by ebennace         ###   ########.fr        #
+#    Updated: 2022/06/09 05:53:14 by ebennace         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -57,7 +57,7 @@ def print_state(env, shape=False):
     print("---State t---")
     print("-A-\t-B-")
     print("___________\t")
-    for a, b in zip_longest(reversed(A), reversed(B), fillvalue='xxx'):
+    for a, b in zip_longest(A, B, fillvalue='xxx'):
         
         print(f"|{a}\t{b}|")
     print("___________\t")

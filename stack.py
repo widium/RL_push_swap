@@ -6,7 +6,7 @@
 #    By: ebennace <ebennace@student.42lausanne.c    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/08 08:04:04 by ebennace          #+#    #+#              #
-#    Updated: 2022/06/08 09:14:36 by ebennace         ###   ########.fr        #
+#    Updated: 2022/06/09 05:56:17 by ebennace         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,7 +26,7 @@ class Stack():
 
         self.stack = np.random.choice(range(100), size, replace=False)
         self.stack = self.stack.astype('float32')
-        self.top = self.stack[-1]
+        self.top = self.stack[0]
         
         
       elif empty == True :

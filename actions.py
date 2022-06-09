@@ -6,7 +6,7 @@
 #    By: ebennace <ebennace@student.42lausanne.c    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/08 05:38:58 by ebennace          #+#    #+#              #
-#    Updated: 2022/06/08 07:01:57 by ebennace         ###   ########.fr        #
+#    Updated: 2022/06/09 09:37:33 by ebennace         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -130,22 +130,22 @@ class Moove():
         
         # ne pas push des nan
         if not np.isnan(A.top):
-          B.stack = np.append(B.stack, A.top)
+          B.stack = np.insert(B.stack, 0, A.top)
           B.top = A.top
           
           # maj A (supprimer la valeur push, ajouter un nan)
-          A.stack = np.delete(A.stack, -1)
-          A.stack = np.insert(A.stack, 0, np.nan)
+          A.stack = np.delete(A.stack, 0)
+          A.stack = np.append(A.stack, np.nan)
           
           #maj B (supprimer un le nan du debut)
-          if np.isnan(B.stack[0]):
-            B.stack = np.delete(B.stack, 0) 
+          if np.isnan(B.stack[-1]):
+            B.stack = np.delete(B.stack, -1) 
 
         # re-Assigner un nouveux top (si A est vide ou si il ya un elements)
         if np.count_nonzero(~np.isnan(A.stack)) == 0:
           A.top = None
         else:
-          A.top = A.stack[-1]
+          A.top = A.stack[0]
           
         # self.action.balanced(self.initial_size)
         return (-1)
@@ -161,25 +161,23 @@ class Moove():
       
       # ne pas push des nan
       if not np.isnan(B.top):
-        A.stack = np.append(A.stack, B.top)
+        A.stack = np.insert(A.stack, 0, B.top)
         A.top = B.top
-        
-        # maj B (supprimer la valeur push, ajouter un nan)
-        B.stack = np.delete(B.stack, -1)
-        B.stack = np.insert(B.stack, 0, np.nan)
-        
+          
+        # maj B (supprimer la valeur push, ajouter un nan a la fin)
+        B.stack = np.delete(B.stack, 0)
+        B.stack = np.append(B.stack, np.nan)
+          
         #maj A (supprimer un le nan du debut)
-        if np.isnan(A.stack[0]):
-          A.stack = np.delete(A.stack, 0) 
+        if np.isnan(A.stack[-1]):
+          A.stack = np.delete(A.stack, -1) 
         
-
        # re-Assigner un nouveux top (si B est vide ou si il ya un elements)
       if np.count_nonzero(~np.isnan(B.stack)) == 0:
         B.top = None
       else:
-        B.top = B.stack[-1]
-        
-      # self.action.balanced(self.initial_size)
+        B.top = B.stack[0]
+  
       return (-1)
   
   def rotate_a(self, A, B):

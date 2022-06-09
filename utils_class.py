@@ -6,7 +6,7 @@
 #    By: ebennace <ebennace@student.42lausanne.c    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/08 05:38:49 by ebennace          #+#    #+#              #
-#    Updated: 2022/06/08 09:56:28 by ebennace         ###   ########.fr        #
+#    Updated: 2022/06/09 05:55:27 by ebennace         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,7 @@ import random
 
 def is_sorted(A):
     for i in range(A.stack.size -1):
-         if A.stack[i+1, : ] > A.stack[i , :]:
+         if A.stack[i+1] > A.stack[i]:
                return False
     return True 
 
