@@ -12,14 +12,12 @@
 ![](https://i.imgur.com/yt55Xbb.png)
 
 ***
-#### Fonction Obligatoire :
+#### Fonction Obligatoire (11 fonctions) :
 ![](https://i.imgur.com/KNiCf6X.png)
 ![](https://i.imgur.com/bzgSka7.png)
 ![](https://i.imgur.com/ZTpX8S2.png)
 ![](https://i.imgur.com/hmLyQJT.png)
-![](https://i.imgur.com/hqMJ0d3.png)
-![](https://i.imgur.com/CpjAFOK.png)
-![](https://i.imgur.com/ZBlZF8c.png)
+![](https://i.imgur.com/T4B2dqm.png)
 ***
 ### Agent :
 
