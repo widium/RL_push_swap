@@ -6,7 +6,7 @@
 #    By: ebennace <ebennace@student.42lausanne.c    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/08 05:38:54 by ebennace          #+#    #+#              #
-#    Updated: 2022/06/08 08:19:21 by ebennace         ###   ########.fr        #
+#    Updated: 2022/06/20 08:16:22 by ebennace         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,10 +16,11 @@ from numpy import nan
 import random
 from collections import namedtuple
 from stack import Stack
-from actions import Moove, Action, List_actions
-from utils_class import EpsilonGreedy, ReplayMemory, is_sorted
+from actions import Moove, List_actions, possible_actions
+from utils_class import EpsilonGreedy, ReplayMemory, is_finish, is_sorted
 from constant import *
-from pre_processing import Normalize, pre_processing_state
+from verbose import print_vector
+from pre_processing import pre_processing_state, denormalize_vector
 from sklearn.preprocessing import MinMaxScaler
 
 
@@ -31,12 +32,11 @@ class Env:
         self.B = Stack(size, empty=True)
         self.size = size
         self.matrice = None
-        # self.scaler = Normalize()
-        # self.scaler = MinMaxScaler(feature_range=(0, 1))
-        # self.A.stack = self.scaler.fit_transform(self.A.stack)
+
+        self.scaler = MinMaxScaler(feature_range=(0, 1))
+
         
         self.moover = Moove(self.A, self.B, size)
-        self.actions = Action(self.A, self.B)
         self.liste = List_actions()
         self.current_action = 1;
         
@@ -56,20 +56,26 @@ class Env:
         self.current_reward = 0
         
     def state(self):
-        if is_sorted(self.A) and np.count_nonzero(~np.isnan(self.B.stack)) == 0:
+        if is_finish(self.A.stack, self.B.stack):
             return 'done'
         return 'in progress'
 
     def get_state(self):
-        self.matrice = np.vstack((self.A.stack, self.B.stack))
+        self.A.stack = self.A.stack.reshape((self.A.stack.shape[0], 1))
+        self.B.stack = self.B.stack.reshape((self.B.stack.shape[0], 1))
+        # print(f"A Shape : {self.A.stack.shape}\nB Shape : {self.B.stack.shape}")
+        self.matrice = np.hstack((self.A.stack, self.B.stack))
         return self.matrice
     
-    def actions_available(self):
-        return self.actions.possible_actions()
+    def normalize(self):
+        self.A.stack = self.scaler.fit_transform(self.A.stack)
     
+    def denormalize(self):
+        self.A.stack = self.scaler.inverse_transform(self.A.stack)
+        
     def reward(self):
-        if is_sorted(self.A) and np.count_nonzero(~np.isnan(self.B.stack)) == 0:
-            self.current_reward += 100
+       if is_finish(self.A, self.B):
+        self.current_reward += 100
         
         #add to cummulative reward
         self.cummulative_reward += self.current_reward
@@ -123,14 +129,21 @@ class Env:
         if (exploration_rate > random.random()):
             print("Exploration")
             #exploration
-            self.current_action = np.random.choice(self.actions.possible_actions())
+            self.current_action = np.random.choice(possible_actions(self.A, self.B))
             self.take_actions()
             return self.current_action
         else :
-            print("Exploitation")
+            print("====== Exploitation =========")
             state = pre_processing_state(state)
-            self.current_action = np.argmax(policy_model.predict(state))
+            vector = policy_model.predict(state)
+            self.current_action = np.argmax(vector)
             self.take_actions()
+            
+            print_vector(vector)
+            # print("Predict Vector :",vector)
+            # print("Shape :",vector.shape)
+            # print("Argmax vector :", np.argmax(vector))
+            print("===========================")
             return self.current_action
     
     

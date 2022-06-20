@@ -6,12 +6,14 @@
 #    By: ebennace <ebennace@student.42lausanne.c    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/07 06:34:16 by ebennace          #+#    #+#              #
-#    Updated: 2022/06/09 05:53:14 by ebennace         ###   ########.fr        #
+#    Updated: 2022/06/20 06:00:50 by ebennace         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
+from ast import arg
 import numpy as np
 from itertools import zip_longest
+from actions import possible_actions
 
 def name_action(action):
     if action == 0:
@@ -37,8 +39,8 @@ def name_action(action):
     elif action == 10:
         return "swap"
 
-def action_available(env):
-    actions = env.actions.possible_actions()
+def print_action_available(env):
+    actions = possible_actions(env.A, env.B)
     print("=== Actions available ===")
     for a in actions:
         print(f"{name_action(a)}")
@@ -107,12 +109,31 @@ def print_buffer(buffer):
     
 def print_interaction(epsilon, action, reward):
     print("----------------------------------")
-    print(f"Action [{name_action(action)}]")
-    print(f"Reward [{reward}]")
-    print(f"Epsilon [{epsilon}]")
+    print(f"Action : [{name_action(action)}]")
+    print(f"Reward : [{reward}]")
+    # print(f"Epsilon : [{epsilon}]")
     print("----------------------------------")
     
 def print_cummulative_reward(env):
     print("----------------------------------")
     print(f"Cumulative Reward [{env.cummulative_reward}]")
     print("----------------------------------")
+    
+    
+def print_vector(vector):
+    max = ' '
+    i = 0
+    arg_max = np.argmax(vector)
+    print(f"Argmax -> {arg_max}")
+    vector = vector.reshape((vector.shape[1]))
+    print("--- Vector of Actions ---")
+    print("___________\t")
+    for a in vector:
+        if i == arg_max:
+            max = f"-> argmax : [{name_action(i)}]"
+        else :
+            max = ' '
+        
+        print(f"|{a}|{max}")
+        i+= 1
+    print("___________\t")

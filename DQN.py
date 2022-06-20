@@ -6,7 +6,7 @@
 #    By: ebennace <ebennace@student.42lausanne.c    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/08 05:39:13 by ebennace          #+#    #+#              #
-#    Updated: 2022/06/08 05:39:18 by ebennace         ###   ########.fr        #
+#    Updated: 2022/06/13 09:52:00 by ebennace         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,28 +17,28 @@ from keras.layers import Dense
 from constant import *
 
 class DQNAgent:
-  def __init__(self, n_stack, features, actions_space):
+  def __init__(self, features, n_stack, actions_space):
 
     #policy model
     # train every steps
-    self.policy_model = self.create_model(n_stack, features, actions_space)
+    self.policy_model = self.create_model(features, n_stack, actions_space)
 
     #target model
     #.predict() every steps
-    self.target_model = self.create_model(n_stack, features, actions_space)
+    self.target_model = self.create_model(features, n_stack, actions_space)
     self.target_model.set_weights(self.policy_model.get_weights())
 
     self.target_update_counter = 0
 
 
-  def create_model(self, n_stack, features, actions_space):
+  def create_model(self, features, n_stack, actions_space):
     
     model = Sequential()
-    model.add(Conv1D(64, 2, activation='relu', input_shape=(n_stack, features)))
+    model.add(Conv1D(64, 2, activation='relu', input_shape=(features, n_stack)))
     model.add(MaxPooling1D(data_format="channels_first"))
     model.add(Flatten())
-    model.add(Dense(50, activation='relu'))
-    model.add(Dense(actions_space))
+    model.add(Dense(50, activation='sigmoid'))
+    model.add(Dense(actions_space, activation='softmax'))
     model.compile(optimizer='adam', loss='categorical_crossentropy')
     return model
 
@@ -48,6 +48,7 @@ class DQNAgent:
 
   def train(self, states, next_states, buffer):
     
+    # print("STATESSS : ", states)
     ##--------Recuperer toutes les Q values des 2 model-----##
     Q_policy_list = self.policy_model.predict(states)
     Q_target_list = self.target_model.predict(next_states)
