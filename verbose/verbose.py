@@ -6,14 +6,13 @@
 #    By: ebennace <ebennace@student.42lausanne.c    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/07 06:34:16 by ebennace          #+#    #+#              #
-#    Updated: 2022/06/20 06:00:50 by ebennace         ###   ########.fr        #
+#    Updated: 2022/06/20 11:31:10 by ebennace         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-from ast import arg
 import numpy as np
 from itertools import zip_longest
-from actions import possible_actions
+from agent.actions import possible_actions
 
 def name_action(action):
     if action == 0:

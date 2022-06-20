@@ -6,13 +6,12 @@
 #    By: ebennace <ebennace@student.42lausanne.c    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/08 08:04:04 by ebennace          #+#    #+#              #
-#    Updated: 2022/06/20 09:22:54 by ebennace         ###   ########.fr        #
+#    Updated: 2022/06/20 11:33:26 by ebennace         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 
 import numpy as np
-import random
 
 
 class Stack():

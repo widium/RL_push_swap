@@ -6,11 +6,10 @@
 #    By: ebennace <ebennace@student.42lausanne.c    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/08 05:38:41 by ebennace          #+#    #+#              #
-#    Updated: 2022/06/08 06:29:04 by ebennace         ###   ########.fr        #
+#    Updated: 2022/06/20 11:32:05 by ebennace         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-from cProfile import label
 import matplotlib.pyplot as plt 
 import numpy as np
 

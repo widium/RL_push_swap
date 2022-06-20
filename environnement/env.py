@@ -6,7 +6,7 @@
 #    By: ebennace <ebennace@student.42lausanne.c    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/08 05:38:54 by ebennace          #+#    #+#              #
-#    Updated: 2022/06/20 08:16:22 by ebennace         ###   ########.fr        #
+#    Updated: 2022/06/20 11:44:50 by ebennace         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,12 +15,13 @@ from numpy import nan
 
 import random
 from collections import namedtuple
-from stack import Stack
-from actions import Moove, List_actions, possible_actions
-from utils_class import EpsilonGreedy, ReplayMemory, is_finish, is_sorted
-from constant import *
-from verbose import print_vector
-from pre_processing import pre_processing_state, denormalize_vector
+from environnement.stack import Stack
+from agent.actions import Moove, List_actions, possible_actions
+from agent.memory import ReplayMemory
+from utils.utils import is_finish, is_sorted
+from utils.constant import *
+from verbose.verbose import print_vector
+from environnement.pre_processing import pre_processing_state, denormalize_vector
 from sklearn.preprocessing import MinMaxScaler
 
 
@@ -74,17 +75,17 @@ class Env:
         self.A.stack = self.scaler.inverse_transform(self.A.stack)
         
     def reward(self):
-       if is_finish(self.A, self.B):
+       if is_finish(self.A.stack, self.B.stack):
         self.current_reward += 100
         
-        #add to cummulative reward
-        self.cummulative_reward += self.current_reward
+       #add to cummulative reward
+       self.cummulative_reward += self.current_reward
         
-        # paste in tmp for reset and return reward
-        reward_tmp = self.current_reward
-        self.current_reward = 0
+       # paste in tmp for reset and return reward
+       reward_tmp = self.current_reward
+       self.current_reward = 0
         
-        return (reward_tmp)
+       return (reward_tmp)
     
     def take_actions(self):
         

@@ -6,19 +6,17 @@
 #    By: ebennace <ebennace@student.42lausanne.c    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/08 05:38:58 by ebennace          #+#    #+#              #
-#    Updated: 2022/06/20 09:34:40 by ebennace         ###   ########.fr        #
+#    Updated: 2022/06/20 11:35:07 by ebennace         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 
 import numpy as np
 
-from utils_class import is_sorted, is_finish, is_empty, get_bot
-from utils_class import top_is_empty, less_than_two_element, index_of_bot
-from constant import *
+from utils.utils import is_sorted, is_finish, is_empty, get_bot
+from utils.utils import top_is_empty, less_than_two_element, index_of_bot
+from utils.constant import *
 
-def delta(A_size, size):
-  return (A_size - size)
 
 def possible_actions(A , B):
   

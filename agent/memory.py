@@ -1,57 +1,18 @@
 # **************************************************************************** #
 #                                                                              #
 #                                                         :::      ::::::::    #
-#    utils_class.py                                     :+:      :+:    :+:    #
+#    memory.py                                          :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
 #    By: ebennace <ebennace@student.42lausanne.c    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2022/06/08 05:38:49 by ebennace          #+#    #+#              #
-#    Updated: 2022/06/20 09:28:45 by ebennace         ###   ########.fr        #
+#    Created: 2022/06/20 11:18:52 by ebennace          #+#    #+#              #
+#    Updated: 2022/06/20 11:23:19 by ebennace         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-import numpy as np
-from collections import namedtuple
 import random
-
-
-def is_sorted(A : np.ndarray):
-    for i in range(A.size -1):
-         if A[i+1] > A[i]:
-               return False
-    return True 
-
-def is_finish(A : np.ndarray, B : np.ndarray):
-    if is_sorted(A) and np.count_nonzero(B) == 0:
-        return True
-    else :    
-        return False
-    
-def is_empty(A : np.ndarray):
-    if (np.count_nonzero(A) == 0):
-        return True
-    else :
-        return False
-    
-def top_is_empty(A : np.ndarray):
-    if A[0] == 0:
-        return True
-    else :
-        return False
-    
-def less_than_two_element(A : np.ndarray):
-    if (np.count_nonzero(A) < 2):
-        return True
-    else :
-        return False
-    
-def index_of_bot(A : np.ndarray):
-    return -(np.count_nonzero(A == 0))
-
-def get_bot(A : np.ndarray):
-    index_bot = index_of_bot(A)
-    return (A[index_bot - 1])
-    
+from collections import namedtuple
+import numpy as np
 
 class ReplayMemory:
     def __init__(self, capacity):
@@ -98,16 +59,3 @@ class ReplayMemory:
             print(f"Actions : {exp.action} \t Reward : {exp.reward}")
             i += 1
             
-
-
-class EpsilonGreedy:
-    def __init__(self, min, max, decay):
-        self.min = min
-        self.max = max
-        self.decay = decay
-        self.epsilon = max
-    
-    def get_exploration_rate(self, current_step):
-        self.epsilon = (self.min + (self.max - self.min)* (np.exp(-self.decay * current_step)))
-        return self.epsilon
-        

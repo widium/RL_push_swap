@@ -6,7 +6,7 @@
 #    By: ebennace <ebennace@student.42lausanne.c    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/08 05:39:13 by ebennace          #+#    #+#              #
-#    Updated: 2022/06/13 09:52:00 by ebennace         ###   ########.fr        #
+#    Updated: 2022/06/20 11:46:09 by ebennace         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ import numpy as np
 from keras.models import Sequential
 from keras.layers import Conv1D, MaxPooling1D, Flatten
 from keras.layers import Dense
-from constant import *
+from utils.constant import *
 
 class DQNAgent:
   def __init__(self, features, n_stack, actions_space):
@@ -78,6 +78,7 @@ def value_function(buffer, Q_target_list, Q_policy_list):
         #recuperer la meilleur action predit par le target model
         max_Q_target = np.max(Q_target_list[t])
         #calculer sa Qvalue
+        print(f"{reward} + {GAMMA} * {max_Q_target}")
         max_Q_value = reward + GAMMA * max_Q_target
       
       #si c'est la derniere q value on lui assigne un reward
