@@ -6,14 +6,15 @@
 #    By: ebennace <ebennace@student.42lausanne.c    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/08 05:39:04 by ebennace          #+#    #+#              #
-#    Updated: 2022/06/20 11:45:38 by ebennace         ###   ########.fr        #
+#    Updated: 2022/06/21 09:34:47 by ebennace         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 
 STACK_SIZE = 3
+NULL_VALUE = -1
 
-EPISODE = 2
+EPISODE = 1
 CAPACITY = 100_000
 BATCH_SIZE = 100
 MIN_REPLAY_MEMORY_SIZE = 100

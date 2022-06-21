@@ -6,7 +6,7 @@
 #    By: ebennace <ebennace@student.42lausanne.c    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/07 06:34:16 by ebennace          #+#    #+#              #
-#    Updated: 2022/06/20 11:31:10 by ebennace         ###   ########.fr        #
+#    Updated: 2022/06/21 06:51:09 by ebennace         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -50,25 +50,64 @@ def print_shapes(state, next_state):
     print(f" Next State shape : {next_state.shape}")
     
 
-def print_state(env, shape=False):
+def print_state(env, shape=False, denormalize=False):
     
-    A = env.A.stack.reshape((env.A.stack.shape[0]))
-    B = env.B.stack.reshape((env.B.stack.shape[0]))
-    
-    print("---State t---")
-    print("-A-\t-B-")
-    print("___________\t")
-    for a, b in zip_longest(A, B, fillvalue='xxx'):
+    if denormalize == False:
+        A = env.A.stack.reshape((env.A.stack.shape[0]))
+        B = env.B.stack.reshape((env.B.stack.shape[0]))
         
-        print(f"|{a}\t{b}|")
-    print("___________\t")
-    if (shape == True):
-        print(f"A shape : {env.A.stack.shape}")
-        print(f"B shape : {env.B.stack.shape}")
+        print("---State t---")
+        print("-A-\t-B-")
         print("___________\t")
-    print("------------")   
-    print(f"Env : {env.state()}")
-    print("------------")
+        for a, b in zip_longest(A, B, fillvalue='xxx'):
+            
+            if a == -1:
+                a = 'xxx'
+            if b == -1:
+                b = 'xxx'
+            
+            print(f"|{a:<15}\t{b}|")
+    
+        print("___________\t")
+
+        if (shape == True):
+            print(f"A shape : {env.A.stack.shape}")
+            print(f"B shape : {env.B.stack.shape}")
+            print("___________\t")
+
+        print("------------")   
+        print(f"Env : {env.state()}")
+        print("------------")
+    
+    #use only when A is full and B is empty
+    else :
+        A = env.A.stack.reshape((env.A.stack.shape[0], 1))
+        A = env.denormalize(A)
+        B = env.B.stack #.reshape((env.B.stack.shape[0]))
+        print(f"Shape A : {A.shape}\nShape B : {B.shape}")
+        
+        A = A.reshape((A.shape[0]))
+        
+        print("---State t---")
+        print("-A-\t-B-")
+        print("___________\t")
+        for a, b in zip_longest(A, B, fillvalue='xxx'):
+            
+            if a == -1:
+                a = 'xxx'
+            if b == -1:
+                b = 'xxx'
+            
+            print(f"|{a:<15}\t{b}|")
+
+        print("___________\t")
+        if (shape == True):
+            print(f"A shape : {env.A.stack.shape}")
+            print(f"B shape : {env.B.stack.shape}")
+            print("___________\t")
+        print("------------")   
+        print(f"Env : {env.state()}")
+        print("------------")
     
     
 def print_experience(experience):
@@ -110,14 +149,8 @@ def print_interaction(epsilon, action, reward):
     print("----------------------------------")
     print(f"Action : [{name_action(action)}]")
     print(f"Reward : [{reward}]")
-    # print(f"Epsilon : [{epsilon}]")
+    print(f"Epsilon : [{epsilon}]")
     print("----------------------------------")
-    
-def print_cummulative_reward(env):
-    print("----------------------------------")
-    print(f"Cumulative Reward [{env.cummulative_reward}]")
-    print("----------------------------------")
-    
     
 def print_vector(vector):
     max = ' '

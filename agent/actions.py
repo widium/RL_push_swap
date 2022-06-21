@@ -6,7 +6,7 @@
 #    By: ebennace <ebennace@student.42lausanne.c    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/08 05:38:58 by ebennace          #+#    #+#              #
-#    Updated: 2022/06/20 11:35:07 by ebennace         ###   ########.fr        #
+#    Updated: 2022/06/21 09:28:27 by ebennace         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,8 @@
 import numpy as np
 
 from utils.utils import is_sorted, is_finish, is_empty, get_bot
-from utils.utils import top_is_empty, less_than_two_element, index_of_bot
+from utils.utils import top_is_empty, less_than_two_element, index_of_bot, bot_is_empty
+from utils.utils import add_value_to_bot
 from utils.constant import *
 
 
@@ -33,32 +34,29 @@ def possible_actions(A , B):
     swap = 10 # "swap"
     
     action = list()
-    # # Si la Stack A est sorted et B vide
-    # if np.count_nonzero(~np.isnan(self.B.stack)) == 0 and is_sorted(self.A):
-    #     return (action);
       
     # SI B a plus d'un elements
-    if (np.count_nonzero(B.stack) > 1):
+    if (np.count_nonzero(B.stack == NULL_VALUE) > 1):
         action.extend([rotate_b,
                        inverse_rotate_b,
                        swap_b])
         
     # Si A a plus d'un elements
-    if (np.count_nonzero(A.stack) > 1):
+    if (np.count_nonzero(A.stack == NULL_VALUE) > 1):
           action.extend([rotate_a,
                          inverse_rotate_a,
                          swap_a])
     
     # Si A a qu'un seul elements ou plus
-    if (np.count_nonzero(A.stack) > 0):
+    if (np.count_nonzero(A.stack == NULL_VALUE) > 0):
         action.extend([push_b])
     
     # Si B a qu'un seul elements ou plus
-    if (np.count_nonzero(B.stack) > 0):
+    if (np.count_nonzero(B.stack == NULL_VALUE) > 0):
         action.extend([push_a])
     
     # si A et B on plus d'un element
-    if (np.count_nonzero(A.stack) > 1 and np.count_nonzero(B.stack) > 1) :
+    if (np.count_nonzero(A.stack == NULL_VALUE) > 1 and np.count_nonzero(B.stack == NULL_VALUE) > 1) :
         action.extend([rotate,
                        reverse,
                        swap])
@@ -89,10 +87,10 @@ class Moove():
           
           # maj A (supprimer la valeur push, ajouter un nan)
           A.stack = np.delete(A.stack, 0)
-          A.stack = np.append(A.stack, 0)
+          A.stack = np.append(A.stack, NULL_VALUE)
           
           #maj B (supprimer un le 0 du debut)
-          if B.stack[-1] == 0:
+          if bot_is_empty(B.stack):
             B.stack = np.delete(B.stack, -1)
 
         # re-Assigner un nouveux top (si A est vide ou si il ya un elements)
@@ -120,10 +118,10 @@ class Moove():
           
         # maj B (supprimer la valeur push, ajouter un nan a la fin)
         B.stack = np.delete(B.stack, 0)
-        B.stack = np.append(B.stack, 0)
+        B.stack = np.append(B.stack, NULL_VALUE)
           
         #maj A (supprimer un le 0 du debut)
-        if A.stack[-1] == 0:
+        if bot_is_empty(A.stack):
           A.stack = np.delete(A.stack, -1) 
         
        # re-Assigner un nouveux top (si B est vide ou si il ya un elements)
@@ -138,14 +136,15 @@ class Moove():
     
     #si A est trier et que B est vide
     if is_finish(A.stack, B.stack):
-        return (BAD_FINISH_REWARD)
+      return (BAD_FINISH_REWARD)
     
     # Si A est vide ou n'a qu'un element 
     if less_than_two_element(A.stack):
       return (EMPTY_REWARD)
     
-    # index du bot 
-    A.stack = np.insert(A.stack, index_of_bot(A.stack), A.top)
+    # index du bot
+    index = index_of_bot(A.stack)
+    A.stack = add_value_to_bot(index, A.stack, A.top)
     A.stack = np.delete(A.stack, 0)
     A.top = A.stack[0]
 
@@ -161,8 +160,9 @@ class Moove():
     if less_than_two_element(B.stack):
       return (EMPTY_REWARD)
     
-    # index du bot 
-    B.stack = np.insert(B.stack, index_of_bot(B.stack), B.top)
+    # index du bot
+    index = index_of_bot(B.stack)
+    B.stack= add_value_to_bot(index, B.stack, B.top)
     B.stack = np.delete(B.stack, 0)
     B.top = B.stack[0]
     

@@ -6,7 +6,7 @@
 #    By: ebennace <ebennace@student.42lausanne.c    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/08 05:38:54 by ebennace          #+#    #+#              #
-#    Updated: 2022/06/20 11:44:50 by ebennace         ###   ########.fr        #
+#    Updated: 2022/06/21 09:41:57 by ebennace         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -46,12 +46,13 @@ class Env:
         self.step = 0
         
         self.replaymemory = ReplayMemory(CAPACITY)
+        
+        # self.A.stack = self.normalize(self.A.stack)
     
     def reset(self, size):
         self.A = Stack(size, empty=False)
         self.B = Stack(size, empty=True)
-        # self.A.stack = self.scaler.fit_transform(self.A.stack)
-        # self.A = self.scaler.transform(self.A.stack)
+        # self.A.stack = self.normalize(self.A.stack)
 
         self.cummulative_reward = 0
         self.current_reward = 0
@@ -68,11 +69,13 @@ class Env:
         self.matrice = np.hstack((self.A.stack, self.B.stack))
         return self.matrice
     
-    def normalize(self):
-        self.A.stack = self.scaler.fit_transform(self.A.stack)
+    def normalize(self, A):
+        A = self.scaler.fit_transform(A)
+        return A
     
-    def denormalize(self):
-        self.A.stack = self.scaler.inverse_transform(self.A.stack)
+    def denormalize(self, A):
+        A = self.scaler.inverse_transform(A)
+        return A
         
     def reward(self):
        if is_finish(self.A.stack, self.B.stack):
