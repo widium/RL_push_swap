@@ -6,7 +6,7 @@
 #    By: ebennace <ebennace@student.42lausanne.c    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/21 06:09:03 by ebennace          #+#    #+#              #
-#    Updated: 2022/06/21 06:43:56 by ebennace         ###   ########.fr        #
+#    Updated: 2022/07/07 11:00:25 by ebennace         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,5 +23,6 @@ def print_performance(epsilon, number_actions, cummulative_reward):
 def print_episode_duration(episode_duration):
     i = 0
     for e in episode_duration:
-        i += 1
         print(f"- Episode {i} : {e} Actions")
+        i += 1
+        

@@ -6,7 +6,7 @@
 #    By: ebennace <ebennace@student.42lausanne.c    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/07 06:34:16 by ebennace          #+#    #+#              #
-#    Updated: 2022/06/21 06:51:09 by ebennace         ###   ########.fr        #
+#    Updated: 2022/07/07 12:07:00 by ebennace         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -169,3 +169,13 @@ def print_vector(vector):
         print(f"|{a}|{max}")
         i+= 1
     print("___________\t")
+    
+    
+
+def print_list_action(list_actions : list):
+    print(f"----- Number of Actions : {len(list_actions)} -----")
+    i = 0
+    for action in list_actions:
+        i += 1
+        print(f"action number {i}  : {action}")
+    print("----------------------------------")

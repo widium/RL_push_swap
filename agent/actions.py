@@ -6,7 +6,7 @@
 #    By: ebennace <ebennace@student.42lausanne.c    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/06/08 05:38:58 by ebennace          #+#    #+#              #
-#    Updated: 2022/06/21 09:28:27 by ebennace         ###   ########.fr        #
+#    Updated: 2022/07/07 10:03:56 by ebennace         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,27 +36,27 @@ def possible_actions(A , B):
     action = list()
       
     # SI B a plus d'un elements
-    if (np.count_nonzero(B.stack == NULL_VALUE) > 1):
+    if (np.count_nonzero(B.stack != NULL_VALUE) > 1):
         action.extend([rotate_b,
                        inverse_rotate_b,
                        swap_b])
         
     # Si A a plus d'un elements
-    if (np.count_nonzero(A.stack == NULL_VALUE) > 1):
+    if (np.count_nonzero(A.stack != NULL_VALUE) > 1):
           action.extend([rotate_a,
                          inverse_rotate_a,
                          swap_a])
     
     # Si A a qu'un seul elements ou plus
-    if (np.count_nonzero(A.stack == NULL_VALUE) > 0):
+    if (np.count_nonzero(A.stack != NULL_VALUE) > 0):
         action.extend([push_b])
     
     # Si B a qu'un seul elements ou plus
-    if (np.count_nonzero(B.stack == NULL_VALUE) > 0):
+    if (np.count_nonzero(B.stack != NULL_VALUE) > 0):
         action.extend([push_a])
     
     # si A et B on plus d'un element
-    if (np.count_nonzero(A.stack == NULL_VALUE) > 1 and np.count_nonzero(B.stack == NULL_VALUE) > 1) :
+    if (np.count_nonzero(A.stack != NULL_VALUE) > 1 and np.count_nonzero(B.stack != NULL_VALUE) > 1) :
         action.extend([rotate,
                        reverse,
                        swap])
