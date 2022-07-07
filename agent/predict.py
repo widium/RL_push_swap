@@ -6,10 +6,11 @@
 #    By: ebennace <ebennace@student.42lausanne.c    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/07/07 11:21:35 by ebennace          #+#    #+#              #
-#    Updated: 2022/07/07 12:09:02 by ebennace         ###   ########.fr        #
+#    Updated: 2022/07/07 14:09:31 by ebennace         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
+from asyncio import FastChildWatcher
 import numpy as np
 
 from agent.DQN import DQNAgent
@@ -20,11 +21,12 @@ from environnement.pre_processing import pre_processing_state, denormalize_vecto
 from verbose.verbose import print_vector, print_list_action
 
 
-def predict(env : Env, agent : DQNAgent):
+def predict_sort(env : Env, agent : DQNAgent, verbose : bool = False ):
     
     list_actions = list()
     
-    print_state(env)
+    if (verbose == True):
+        print_state(env)
     
     while (1):
         
@@ -32,17 +34,25 @@ def predict(env : Env, agent : DQNAgent):
         state = pre_processing_state(state)
         
         vector = agent.policy_model.predict(state)
-        print_vector(vector)
         
         env.current_action = np.argmax(vector)
         action_name = plot_action(env.current_action)
         list_actions.append(action_name)
         env.take_actions()
         
-        print_state(env)
+        if (verbose == True):
+            print_vector(vector)
+            print_state(env)
         
         if (env.state() == 'done'):
-            print_list_action(list_actions)
+            
+            if (verbose == True):
+                print_list_action(list_actions)
+            
+            else :
+                for action in list_actions:
+                    print(action)
+    
             break
         
 
